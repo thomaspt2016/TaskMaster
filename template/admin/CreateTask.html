@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Task Creation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Task</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'adminpoint:createtask' %}">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_title">Title</label>
+                            <input type="text" class="form-control" id="id_title" name="title" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_description">Description</label>
+                            <textarea class="form-control" id="id_description" name="description" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_assignedto">Assigned To</label>
+                            <select class="form-control" id="id_assignedto" name="assignedto" required>
+                                <option value="">-- Select a User --</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.name }} ({{ user.username }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_duedate">Due Date</label>
+                            <input type="date" class="form-control" id="id_duedate" name="duedate" min="{{ today }}" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Create Task</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

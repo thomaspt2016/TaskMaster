@@ -1,0 +1,58 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block title %}All Tasks{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">All Tasks</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Assigned To</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.assignedto.name }}</td>
+                <td>{{ task.duedate|date:"F d, Y" }}</td>
+                <td>{{ task.status }}</td>
+            <td>
+                {% if user.is_superuser %}
+                {% if task.status == "Pending" %}
+                    <a href="{% url 'superadminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
+                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% elif task.status == "In Progress" %}
+                    <a href="{% url 'superadminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
+                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% else %}
+                    <a href="{% url 'superadminpoint:completed' task.id %}" class="btn btn-success btn-sm">View Report</a>
+                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% endif %}
+                {% else %}
+                    {% if task.status == "Pending" %}
+                        <a href="{% url 'adminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
+                        <a href="{% url 'adminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% elif task.status == "In Progress" %}
+                        <a href="{% url 'adminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
+                        <a href="{% url 'adminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% else %}
+                        <a href="{% url 'adminpoint:updatetask' task.id %}" class="btn btn-success btn-sm">View Report</a>
+                        <a href="{% url 'adminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% endif %}
+                {% endif %}
+            </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No tasks found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

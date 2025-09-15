@@ -1,0 +1,58 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block title %}All Users{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">All Users</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Assigned Admin</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                    {% if user.assigned_admin and user.role == 'user' %}
+                        {{ user.assigned_admin.name }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'superadminpoint:deleteuser' user.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="{% url 'adminpoint:userlist' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
+                    {% if user.role == 'admin' %}
+                    <a href="{% url 'superadminpoint:demoteuser' user.id %}" class="btn btn-success btn-sm">Demote</a>
+                    <a href="{% url 'superadminpoint:updateadmin' user.id %}" class="btn btn-secondary btn-sm">View & Edit</a>
+                    {% endif %}
+                    {% if user.role == 'user' %}
+                    <a href="{% url 'superadminpoint:updateuser' user.id %}" class="btn btn-secondary btn-sm">View & Edit</a>
+                    <a href="{% url 'superadminpoint:promoteuser' user.id %}" class="btn btn-success btn-sm">Promote</a>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'adminpoint:userlist' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
+                    <a href="{% url 'superadminpoint:updateuser' user.id %}" class="btn btn-success btn-sm">Assign Task</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Task Report{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Task Report: {{ task.title }}</h2>
+    <hr>
+    <p><strong>Description:</strong></p>
+    <p>{{ task.description }}</p>
+    <hr>
+    <p><strong>Assigned To:</strong> {{ task.assignedto.name }}</p>
+    <p><strong>Supervisor:</strong> {{ task.supervisor.name }}</p>
+    <p><strong>Due Date:</strong> {{ task.duedate|date:"F d, Y" }}</p>
+    <p><strong>Status:</strong> {{ task.status }}</p>
+    <p><strong>Created At:</strong> {{ task.created_at|date:"F d, Y P" }}</p>
+    <p><strong>Last Updated:</strong> {{ task.updated_at|date:"F d, Y P" }}</p>
+    <hr>
+    <h4>Completion Report</h4>
+    <p>{{ task.completionreport }}</p>
+    <h4>Worked Hours</h4>
+    <p>{{ task.workedhours }}</p>
+    <hr>
+    {% if user.is_superuser %}
+    <a href="{% url 'superadminpoint:tasklist' %}" class="btn btn-secondary mt-3">Back to All Tasks</a>
+    {% else %}
+    <a href="{% url 'adminpoint:tasklist' %}" class="btn btn-secondary mt-3">View Task</a>
+    {% endif %}
+</div>
+{% endblock %}
