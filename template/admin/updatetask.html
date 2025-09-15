@@ -11,11 +11,7 @@
                     <h4 class="mb-0">Edit Task: {{ task.title }}</h4>
                 </div>
                 <div class="card-body">
-                    {% if user.is_superuser %}
-                    <form method="post" action="{% url 'superadminpoint:updatetask' task.id %}">
-                    {% else %}
                     <form method="post" action="{% url 'adminpoint:updatetask' task.id %}">
-                    {% endif %}
                         {% csrf_token %}
                         <div class="form-group mb-3">
                             <label for="id_title">Title</label>

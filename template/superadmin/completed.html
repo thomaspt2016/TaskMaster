@@ -20,10 +20,6 @@
     <h4>Worked Hours</h4>
     <p>{{ task.workedhours }}</p>
     <hr>
-    {% if user.is_superuser %}
     <a href="{% url 'superadminpoint:tasklist' %}" class="btn btn-secondary mt-3">Back to All Tasks</a>
-    {% else %}
-    <a href="{% url 'adminpoint:tasklist' %}" class="btn btn-secondary mt-3">View Task</a>
-    {% endif %}
 </div>
 {% endblock %}

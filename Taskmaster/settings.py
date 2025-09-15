@@ -67,6 +67,9 @@ REST_FRAMEWORK = {
     )
 }
 
+from django.urls import reverse_lazy
+LOGIN_URL = reverse_lazy('commn:login')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

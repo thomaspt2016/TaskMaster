@@ -22,18 +22,6 @@
                 <td>{{ task.duedate|date:"F d, Y" }}</td>
                 <td>{{ task.status }}</td>
             <td>
-                {% if user.is_superuser %}
-                {% if task.status == "Pending" %}
-                    <a href="{% url 'superadminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
-                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
-                {% elif task.status == "In Progress" %}
-                    <a href="{% url 'superadminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
-                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
-                {% else %}
-                    <a href="{% url 'superadminpoint:completed' task.id %}" class="btn btn-success btn-sm">View Report</a>
-                    <a href="{% url 'superadminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
-                {% endif %}
-                {% else %}
                     {% if task.status == "Pending" %}
                         <a href="{% url 'adminpoint:updatetask' task.id %}" class="btn btn-primary btn-sm">View & Edit</a>
                         <a href="{% url 'adminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
@@ -44,7 +32,6 @@
                         <a href="{% url 'adminpoint:updatetask' task.id %}" class="btn btn-success btn-sm">View Report</a>
                         <a href="{% url 'adminpoint:deletetask' task.id %}" class="btn btn-danger btn-sm">Delete</a>
                     {% endif %}
-                {% endif %}
             </td>
             </tr>
             {% empty %}

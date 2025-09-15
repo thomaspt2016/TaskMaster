@@ -28,4 +28,5 @@ urlpatterns = [
     path('deletetask/<int:task_id>/', views.DeleteTaskView.as_view(), name='deletetask'),
     path('userlist/<int:user_id>/', views.UserTaskListView.as_view(), name='userlist'),
     path('delettask/<int:task_id>/', views.delettask.as_view(), name='delettask'),
+    path('completed/<int:task_id>/', views.CompletdTaskView.as_view(), name='completed'),
 ]

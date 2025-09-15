@@ -32,18 +32,12 @@
                 <td>
                     {% if request.user.is_superuser %}
                     <a href="{% url 'superadminpoint:deleteuser' user.id %}" class="btn btn-danger btn-sm">Delete</a>
-                    <a href="{% url 'adminpoint:userlist' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
+                    {% endif %}
                     {% if user.role == 'admin' %}
-                    <a href="{% url 'superadminpoint:demoteuser' user.id %}" class="btn btn-success btn-sm">Demote</a>
-                    <a href="{% url 'superadminpoint:updateadmin' user.id %}" class="btn btn-secondary btn-sm">View & Edit</a>
-                    {% endif %}
-                    {% if user.role == 'user' %}
-                    <a href="{% url 'superadminpoint:updateuser' user.id %}" class="btn btn-secondary btn-sm">View & Edit</a>
-                    <a href="{% url 'superadminpoint:promoteuser' user.id %}" class="btn btn-success btn-sm">Promote</a>
-                    {% endif %}
+                    <a href="{% url 'superadminpoint:admintasks' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
                     {% else %}
-                    <a href="{% url 'adminpoint:userlist' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
-                    <a href="{% url 'superadminpoint:updateuser' user.id %}" class="btn btn-success btn-sm">Assign Task</a>
+                    <a href="{% url 'superadminpoint:usertasks' user.id %}" class="btn btn-secondary btn-sm">View Tasks</a>
+            
                     {% endif %}
                 </td>
             </tr>
