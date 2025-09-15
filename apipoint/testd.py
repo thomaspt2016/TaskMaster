@@ -8,9 +8,6 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'supervisor']
     
     def validate(self, attrs):
-        """
-        Prevents updates to a completed task and checks for required fields.
-        """
         if self.instance and self.instance.status == 'Completed':
             raise serializers.ValidationError(
                 {"detail": "This task has already been completed and cannot be updated."}
@@ -19,8 +16,6 @@ class TaskSerializer(serializers.ModelSerializer):
         status = attrs.get('status', self.instance.status if self.instance else None)
         worked_hours = attrs.get('workedhours', self.instance.workedhours if self.instance else None)
         completion_report = attrs.get('completionreport', self.instance.completionreport if self.instance else None)
-
-        # Check for required fields only when the status is being set to 'Completed'.
         if status == 'Completed':
             if worked_hours is None or worked_hours <= 0:
                 raise serializers.ValidationError(
@@ -33,4 +28,3 @@ class TaskSerializer(serializers.ModelSerializer):
                 )
         
         return attrs
-
