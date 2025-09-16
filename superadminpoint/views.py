@@ -1,14 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.views import View
-from .forms import CustomUserCreationForm,AdminUserCreationForm
+from .forms import CustomUserCreationForm, AdminUserCreationForm
 from .models import CustomUser
 from apipoint.models import TaskModel
 import datetime as dt
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+
 
 def Client_required(function):
     def wrap(request, *args, **kwargs):
@@ -19,62 +20,58 @@ def Client_required(function):
             return redirect(reverse('commn:login'))
     return wrap
 
+
 @method_decorator(Client_required, name='dispatch')
 class UserCreationView(View):
-    def get(self,request):
+    def get(self, request):
         form = CustomUserCreationForm()
-        return render(request,'superadmin/usercreation.html',{'form':form})
-    
-    def post(self,request):
+        return render(request, 'superadmin/usercreation.html', {'form': form})
+
+    def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             usr = form.save(commit=False)
             usr.username = usr.email
             usr.save()
             return redirect('superadminpoint:usercreation')
-        return render(request,'superadmin/usercreation.html',{'form':form})
-    
+        return render(request, 'superadmin/usercreation.html', {'form': form})
 
 
 @method_decorator(Client_required, name='dispatch')
 class ViewAllUsers(View):
-    def get(self,request):
-        users = CustomUser.objects.filter(Q(role='user')).select_related('assigned_admin')
-        return render(request,'superadmin/allusers.html',{'users':users})
-    
-    
+    def get(self, request):
+        users = CustomUser.objects.filter(
+            Q(role='user')).select_related('assigned_admin')
+        return render(request, 'superadmin/allusers.html', {'users': users})
+
 
 @method_decorator(Client_required, name='dispatch')
 class ViewAllAdmin(View):
-    def get(self,request):
+    def get(self, request):
         users = CustomUser.objects.filter(role='admin')
-        return render(request,'superadmin/allusers.html',{'users':users})
-    
+        return render(request, 'superadmin/allusers.html', {'users': users})
+
 
 @method_decorator(Client_required, name='dispatch')
 class DeleteUser(View):
-    def get(self,request,i):
+    def get(self, request, i):
         user = CustomUser.objects.get(id=i)
         user.delete()
         return redirect('superadminpoint:allusers')
 
 
-
-
 @method_decorator(Client_required, name='dispatch')
 class PromoteUser(View):
-    def get(self,request,i):
+    def get(self, request, i):
         user = CustomUser.objects.get(id=i)
         user.role = 'admin'
         user.save()
         return redirect('superadminpoint:allusers')
 
 
-
-
 @method_decorator(Client_required, name='dispatch')
 class DemoteUser(View):
-    def get(self,request,i):
+    def get(self, request, i):
         user = CustomUser.objects.get(id=i)
         user.role = 'user'
         user.assigned_admin = None
@@ -82,14 +79,13 @@ class DemoteUser(View):
         return redirect('superadminpoint:allusers')
 
 
-
-
 @method_decorator(Client_required, name='dispatch')
 class UpdateUser(View):
     def get(self, request, i):
         user = CustomUser.objects.get(id=i)
         form = CustomUserCreationForm(instance=user)
-        return render(request, 'superadmin/useredit.html', {'form':form})
+        return render(request, 'superadmin/useredit.html', {'form': form})
+
     def post(self, request, i):
         user = CustomUser.objects.get(id=i)
         form = CustomUserCreationForm(request.POST, instance=user)
@@ -99,8 +95,7 @@ class UpdateUser(View):
             usr.username = usr.email
             usr.save()
             return redirect('superadminpoint:allusers')
-        return render(request, 'superadmin/useredit.html', {'form':form})
-    
+        return render(request, 'superadmin/useredit.html', {'form': form})
 
 
 @method_decorator(Client_required, name='dispatch')
@@ -108,7 +103,8 @@ class UpdateAdmin(View):
     def get(self, request, i):
         user = CustomUser.objects.get(id=i)
         form = AdminUserCreationForm(instance=user)
-        return render(request, 'superadmin/useredit.html', {'form':form})
+        return render(request, 'superadmin/useredit.html', {'form': form})
+
     def post(self, request, i):
         user = CustomUser.objects.get(id=i)
         form = AdminUserCreationForm(request.POST, instance=user)
@@ -118,34 +114,31 @@ class UpdateAdmin(View):
             usr.username = usr.email
             usr.save()
             return redirect('superadminpoint:allusers')
-        return render(request, 'superadmin/useredit.html', {'form':form})
-    
+        return render(request, 'superadmin/useredit.html', {'form': form})
 
-@method_decorator(Client_required, name='dispatch')    
+
+@method_decorator(Client_required, name='dispatch')
 class taskListView(View):
     def get(self, request):
         tasks = TaskModel.objects.all()
-        return render(request, 'superadmin/tasklist.html', {'tasks':tasks})
-    
+        return render(request, 'superadmin/tasklist.html', {'tasks': tasks})
 
 
-
-@method_decorator(Client_required, name='dispatch')    
+@method_decorator(Client_required, name='dispatch')
 class CompletdTaskView(View):
     def get(self, request, task_id):
         task = TaskModel.objects.get(id=task_id)
-        return render(request, 'superadmin/completed.html', {'task':task})
+        return render(request, 'superadmin/completed.html', {'task': task})
 
 
-
-
-@method_decorator(Client_required, name='dispatch')    
+@method_decorator(Client_required, name='dispatch')
 class UpdateTaskView(View):
     def get(self, request, task_id):
         task = TaskModel.objects.get(id=task_id)
-        users = CustomUser.objects.filter(Q(role='user') | Q(role='admin') )
+        users = CustomUser.objects.filter(Q(role='user') | Q(role='admin'))
         today = dt.date.today().isoformat()
-        return render(request, 'superadmin/updatetask.html', {'task':task, 'users':users, 'today':today})
+        return render(request, 'superadmin/updatetask.html', {'task': task, 'users': users, 'today': today})
+
     def post(self, request, task_id):
         task = TaskModel.objects.get(id=task_id)
         title = request.POST.get('title')
@@ -164,26 +157,21 @@ class UpdateTaskView(View):
             return redirect('superadminpoint:tasklist')
 
 
-
 @method_decorator(Client_required, name='dispatch')
 class DeleteTaskView(View):
     def get(self, request, task_id):
         task = TaskModel.objects.get(id=task_id)
         task.delete()
         return redirect('superadminpoint:tasklist')
-    
 
 
-
-@method_decorator(Client_required, name='dispatch')    
+@method_decorator(Client_required, name='dispatch')
 class UserTasksView(View):
     def get(self, request, user_id):
         print("inside")
         user = CustomUser.objects.get(id=user_id)
         tasks = TaskModel.objects.filter(assignedto=user)
-        return render(request, 'superadmin/tasklist.html', {'tasks':tasks})
-
-
+        return render(request, 'superadmin/tasklist.html', {'tasks': tasks})
 
 
 @method_decorator(Client_required, name='dispatch')
@@ -191,4 +179,4 @@ class AdminTaskView(View):
     def get(self, request, user_id):
         print(user_id)
         tasks = TaskModel.objects.filter(supervisor=user_id)
-        return render(request, 'superadmin/tasklist.html', {'tasks':tasks})
+        return render(request, 'superadmin/tasklist.html', {'tasks': tasks})
